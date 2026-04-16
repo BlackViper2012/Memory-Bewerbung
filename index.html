@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Memory Bewerbung</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin-top: 20px;
+}
+
+.subtitle {
+  color: #555;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 120px);
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.card {
+  width: 120px;
+  height: 120px;
+  background: #1E2A38;
+  color: white;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+  padding: 10px;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+.card.flipped {
+  background: #00A8A8;
+}
+
+.card.matched {
+  background: #4CAF50;
+  cursor: default;
+}
+
+#message {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.footer {
+  margin-top: 40px;
+  font-size: 14px;
+  color: #777;
+}
+</style>
+
+</head>
+<body>
+
+<h1>🧠 Memory – Finde den passenden Fachinformatiker</h1>
+<p class="subtitle">Interaktive Bewerbung von [DEIN NAME]</p>
+
+<div class="grid" id="game"></div>
+
+<div id="message"></div>
+
+<div class="footer">
+  Tipp: Finde alle passenden Paare 👀
+</div>
+
+<script>
+const cardsData = [
+  { text: "👂 Zuhören", match: "Ich verstehe Anforderungen genau" },
+  { text: "👂 Zuhören", match: "Ich verstehe Anforderungen genau" },
+
+  { text: "🧠 Erinnerung", match: "Ich erkenne Probleme schnell wieder" },
+  { text: "🧠 Erinnerung", match: "Ich erkenne Probleme schnell wieder" },
+
+  { text: "👥 Team", match: "Gute Kommunikation = bessere Ergebnisse" },
+  { text: "👥 Team", match: "Gute Kommunikation = bessere Ergebnisse" },
+
+  { text: "📚 Lernen", match: "Ich arbeite mich schnell in Neues ein" },
+  { text: "📚 Lernen", match: "Ich arbeite mich schnell in Neues ein" }
+];
+
+let shuffled = cardsData.sort(() => 0.5 - Math.random());
+let selected = [];
+let matchedCount = 0;
+
+const game = document.getElementById("game");
+const message = document.getElementById("message");
+
+shuffled.forEach((item) => {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.dataset.text = item.text;
+  card.dataset.match = item.match;
+  card.innerText = "?";
+
+  card.onclick = () => {
+    if (card.classList.contains("flipped") || card.classList.contains("matched")) return;
+
+    card.classList.add("flipped");
+    card.innerText = item.text;
+
+    selected.push(card);
+
+    if (selected.length === 2) {
+      if (
+        selected[0].dataset.text === selected[1].dataset.text &&
+        selected[0] !== selected[1]
+      ) {
+        selected.forEach(c => {
+          c.classList.add("matched");
+          c.innerText = c.dataset.match;
+        });
+
+        matchedCount++;
+        selected = [];
+
+        if (matchedCount === 4) {
+          message.innerText = "🎉 Alle Matches gefunden – Sie haben Ihren Fachinformatiker gefunden!";
+        }
+
+      } else {
+        setTimeout(() => {
+          selected.forEach(c => {
+            c.classList.remove("flipped");
+            c.innerText = "?";
+          });
+          selected = [];
+        }, 800);
+      }
+    }
+  };
+
+  game.appendChild(card);
+});
+</script>
+
+</body>
+</html>
